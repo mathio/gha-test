@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Top directories usage
         run: du -h -d2 / | sort -hr | tee disk-usage.txt
@@ -19,7 +19,7 @@ jobs:
           find / -type f -exec du -h {} + 2>/dev/null | sort -hr | head -n 1000 > large-files.txt
 
       - name: Upload logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: disk-audit
           path: |
