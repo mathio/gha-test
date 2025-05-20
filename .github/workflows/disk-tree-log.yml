@@ -40,7 +40,7 @@ jobs:
           find / -xdev -type f -exec du -h {} + | sort -hr | head -n 1000 > logs/large-files.txt
 
       - name: Upload logs as artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: disk-logs
           path: logs/
