@@ -1,0 +1,46 @@
+name: Disk Tree Usage Log
+
+on:
+  workflow_dispatch:
+#   push:
+#     branches:
+#       - main  # or change to your desired branch
+
+jobs:
+  disk-usage-tree:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install tree if missing
+        run: sudo apt-get update && sudo apt-get install -y tree
+
+      - name: Log top-level directories and sizes
+        run: |
+          echo "📁 Top-Level Disk Usage (/):"
+          du -h -d1 / | sort -hr
+
+      - name: Show full directory tree (limited depth)
+        run: |
+          echo "📂 Directory Tree (Depth 3) from /:"
+          sudo tree -h -L 3 -d /
+
+      - name: Detailed recursive listing with file sizes
+        run: |
+          echo "📄 Recursive File Listing (with sizes) from /:"
+          sudo find / -xdev -type f -exec du -h {} + | sort -hr | head -n 1000
+
+      - name: Save logs to file
+        run: |
+          mkdir -p logs
+          du -h -d2 / > logs/du-root.txt
+          tree -h -L 3 -d / > logs/tree-root.txt
+          find / -xdev -type f -exec du -h {} + | sort -hr | head -n 1000 > logs/large-files.txt
+
+      - name: Upload logs as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: disk-logs
+          path: logs/
